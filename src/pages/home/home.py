@@ -2,6 +2,7 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 
 from .comps.add_course import add_course_layout
+from .comps.view_course import view_course_layout
 
 
 dash.register_page(
@@ -16,6 +17,8 @@ layout = html.Div(
         html.H1('This is home'),
 
         add_course_layout,
+
+        view_course_layout,
 
         dcc.Store(id='store-data-course', 
                   data=[], 
@@ -34,3 +37,5 @@ layout = html.Div(
 def temp_txt_fct(data):
     print(data)
     return 'data has been updated'
+
+
