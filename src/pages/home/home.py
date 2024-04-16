@@ -20,9 +20,9 @@ layout = html.Div(
 
         add_course_layout,
 
-        add_student_layout,
-
         view_course_layout,
+
+        add_student_layout,
 
         search_bar_layout,
 
@@ -34,20 +34,10 @@ layout = html.Div(
 
         dcc.Store(id='store-data-search', 
                   data=[], 
-                  storage_type='memory'), # 'memory', 'local' or 'session'
+                  storage_type='memory') # 'memory', 'local' or 'session'
 
-        html.P(children="random Initial text", id='temp-text')
     ]
 )
 
-
-@callback(
-    Output('temp-text', 'children'),
-    Input('store-data-course', 'data'),
-    prevent_initial_call=True
-)
-def temp_txt_fct(data):
-    print(data)
-    return 'data has been updated'
 
 

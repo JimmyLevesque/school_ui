@@ -49,28 +49,21 @@ add_student_layout = html.Div([
                                 n_clicks=0,
                                 style={'width': '200px'}),
                     ], width=6),
-                
-            ]),
-            
-        ]),
-
+            ])  
+        ])
     ],
     id="modal-add-student",
     size="lg",
     is_open=False,
     ),
 
-    dbc.Toast(
-            children=[],
-            id="toast-error",
-            header="Entry Error(s)",
-            is_open=False,
-            dismissable=True,
-            icon="danger",
-            # top: 66 positions the toast below the navbar
-            style={"position": "fixed", "top": 66, "right": 10, "width": 350},
-            className= 'dimmer toast-container'
-        )
+    dbc.Alert(children="", 
+                color="danger",
+                id="alert-entry-error",
+                dismissable=True,
+                fade=False,
+                is_open=False)
+
 ])
 
 
@@ -146,8 +139,8 @@ class StudentCreate(BaseModel):
 
 
 @callback(
-    [Output("toast-error", 'is_open', allow_duplicate=True),
-    Output("toast-error", 'children', allow_duplicate=True),
+    [Output("alert-entry-error", 'is_open', allow_duplicate=True),
+    Output("alert-entry-error", 'children', allow_duplicate=True),
     Output('store-data-course', 'data', allow_duplicate=True),
     Output('modal-add-student', 'is_open', allow_duplicate=True)],
     Input('btn-add-student-submit', 'n_clicks'),
@@ -163,38 +156,21 @@ def create_student(n_clicks_submit, course_data, student_fn, student_ln, emails)
 
     val_errors = None
     try:
-        print('got here 1')
         payload = StudentCreate(course_id=course_data['id'],
                                 firstname=student_fn,
                                 lastname=student_ln,
                                 emails=[EmailCreate(email=email) for email in emails])
-        print('got here 2')
+
     except ValidationError as e:
-        print('got here 3')
         val_errors=e
 
-    print(val_errors)
-    print('got here 4')
     if val_errors:
         toast_children = [dbc.Row([x for x in val_errors.__str__().split('\n')])]
-        toast_children.append(html.Button('Close', id='toast-error-button'))
         return True, toast_children, course_data, True
 
-    print('got here')
 
     _ = requests.post(api_url + '/student/create_student/', data=payload.model_dump_json(),  verify=False)
 
     resp = requests.get(api_url + '/course/get_course/' + str(course_data['id']), verify=False)
 
     return False, None, resp.json(), False
-
-
-
-@callback(
-    [Output("toast-error", 'is_open', allow_duplicate=True),
-     Output('modal-add-student', 'is_open', allow_duplicate=True)],
-     Input('toast-error-button', 'n_clicks'),
-    prevent_initial_call=True
-)
-def close_toast_error(n):
-    return False, True
