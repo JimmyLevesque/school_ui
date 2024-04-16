@@ -3,7 +3,8 @@ from dash import html, dcc, callback, Input, Output, State
 
 from .comps.add_course import add_course_layout
 from .comps.view_course import view_course_layout
-
+from .comps.search_bar import search_bar_layout
+from .comps.search_results import search_results_layout
 
 dash.register_page(
     __name__,
@@ -20,7 +21,15 @@ layout = html.Div(
 
         view_course_layout,
 
+        search_bar_layout,
+
+        search_results_layout,
+
         dcc.Store(id='store-data-course', 
+                  data=[], 
+                  storage_type='memory'), # 'memory', 'local' or 'session'
+
+        dcc.Store(id='store-data-search', 
                   data=[], 
                   storage_type='memory'), # 'memory', 'local' or 'session'
 

@@ -73,7 +73,7 @@ def get_course_card(course: Course):
 
 @callback(
     Output('course-view-placeholder', 'children'),
-    Input("store-data-course", 'data'),
+    Input("store-data-course", 'data'),  # store-data-course not defined in this page
     prevent_initial_call=True
 )
 def update_view_course(data):
